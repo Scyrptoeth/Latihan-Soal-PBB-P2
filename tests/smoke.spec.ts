@@ -4,6 +4,10 @@ test.describe("Direct package navigation", () => {
   test("opens a package from the sidebar directly in test mode", async ({ page }) => {
     await page.goto("/");
 
+    const topbarNavigation = page.locator(".mode-switch");
+    await expect(topbarNavigation.getByRole("link", { name: "Materi" })).toHaveCount(0);
+    await expect(topbarNavigation.getByRole("button", { name: "Tes" })).toHaveCount(0);
+
     await page.locator(".topic-list").getByRole("button", { name: /Paket B/ }).click();
 
     await expect(page.locator(".test-layout")).toBeVisible();

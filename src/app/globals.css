@@ -400,7 +400,6 @@ button:disabled {
   padding: 4px;
 }
 
-.mode-switch a,
 .mode-switch button,
 .package-strip button,
 .sticky-actions button {
@@ -411,7 +410,6 @@ button:disabled {
   min-height: 40px;
 }
 
-.mode-switch a,
 .mode-switch button {
   background: transparent;
   border: 0;
@@ -426,7 +424,6 @@ button:disabled {
   transition: background-color 220ms, color 220ms, transform 220ms;
 }
 
-.mode-switch a:hover,
 .mode-switch button:hover {
   background: var(--paper-soft);
   color: var(--ink);
@@ -1490,7 +1487,6 @@ button:disabled {
     width: 100%;
   }
 
-  .mode-switch a,
   .mode-switch button {
     flex: 1 1 auto;
     font-size: 13px;

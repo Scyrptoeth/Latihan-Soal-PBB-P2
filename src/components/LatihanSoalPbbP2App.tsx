@@ -8,7 +8,6 @@ import {
   ChevronRight,
   CheckCircle2,
   ClipboardCheck,
-  FileText,
   Home,
   Layers3,
   Mail,
@@ -277,27 +276,8 @@ export function LatihanSoalPbbP2App() {
     };
   }, []);
 
-  function activateMode(nextMode: Mode) {
-    if (nextMode === "home") {
-      setMode("home");
-      return;
-    }
-
-    const nextPackage = currentPackage ?? studyPackages[0] ?? null;
-    setMode("test");
-
-    if (!nextPackage) {
-      setSelectedPackageId(null);
-      setAnswers([]);
-      setSubmittedAttempt(null);
-      return;
-    }
-
-    if (nextPackage.id !== selectedPackageId || answers.length !== nextPackage.questions.length) {
-      setSelectedPackageId(nextPackage.id);
-      setAnswers(createEmptyAnswers(nextPackage.questions));
-      setSubmittedAttempt(null);
-    }
+  function showHome() {
+    setMode("home");
   }
 
   function selectPackage(packageId: string) {
@@ -522,7 +502,7 @@ export function LatihanSoalPbbP2App() {
           <nav className="topic-list" aria-label="Daftar paket latihan">
             <button
               className={`topic-button ${mode === "home" ? "is-active" : ""}`}
-              onClick={() => activateMode("home")}
+              onClick={showHome}
               type="button"
               title={SUBJECT_NAME}
             >
@@ -573,28 +553,15 @@ export function LatihanSoalPbbP2App() {
                 />
               </a>
             ) : null}
-            <div className="mode-switch" aria-label="Mode belajar">
-              <a href="/PBB-P-2.pdf" rel="noreferrer" target="_blank">
-                <FileText aria-hidden="true" size={18} />
-                Materi
-              </a>
+            <div className="mode-switch" aria-label="Navigasi utama">
               <button
                 aria-pressed={mode === "home"}
                 className={mode === "home" ? "is-active" : ""}
-                onClick={() => activateMode("home")}
+                onClick={showHome}
                 type="button"
               >
                 <Home aria-hidden="true" size={18} />
                 Beranda
-              </button>
-              <button
-                aria-pressed={mode === "test"}
-                className={mode === "test" ? "is-active" : ""}
-                onClick={() => activateMode("test")}
-                type="button"
-              >
-                <ClipboardCheck aria-hidden="true" size={18} />
-                Tes
               </button>
               <ThemeToggle />
             </div>
