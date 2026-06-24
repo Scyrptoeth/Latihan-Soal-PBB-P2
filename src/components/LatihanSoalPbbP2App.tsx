@@ -518,7 +518,7 @@ export function LatihanSoalPbbP2App() {
             <a
               aria-label="Buka halaman utama Latihan Soal PBB-P2"
               className={`brand-mark ${isSidebarExpanded ? "is-wide" : "is-square"}`}
-              href="https://persiapantubel.com/product"
+              href="https://latihan-soal-pbb-p2.vercel.app/"
             >
               <Image
                 alt=""
