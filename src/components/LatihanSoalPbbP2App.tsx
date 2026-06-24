@@ -804,7 +804,6 @@ export function LatihanSoalPbbP2App() {
                   <button
                     className="is-active"
                     type="button"
-                    aria-label={`${SUBJECT_NAME}: ${progressData.attemptedCount} dari ${progressData.totalPackages} paket dikerjakan`}
                   >
                     <span>
                       <strong>{SUBJECT_NAME}</strong>
