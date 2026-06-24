@@ -1,18 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 974" width="2560" height="974">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0c1017"/>
-      <stop offset="100%" stop-color="#1b2330"/>
+    <linearGradient id="brandBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="55%" stop-color="#111b2d"/>
+      <stop offset="100%" stop-color="#162537"/>
     </linearGradient>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#1f2d42" stroke-width="1.5"/>
+    </pattern>
   </defs>
-  <rect width="2560" height="974" fill="url(#bg)" rx="20"/>
-  <g transform="translate(160, 320)">
-    <text x="0" y="0" fill="#f4f7fb" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="160" font-weight="800" letter-spacing="-2">Latihan Soal</text>
-    <text x="0" y="180" fill="#63e6aa" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="180" font-weight="900" letter-spacing="-2">PBB-P2</text>
+
+  <rect width="2560" height="974" fill="url(#brandBg)" rx="22"/>
+  <rect width="2560" height="974" fill="url(#grid)" opacity="0.6" rx="22"/>
+
+  <!-- abstract land + building motif -->
+  <g transform="translate(1820, 220)" opacity="0.9">
+    <!-- land line -->
+    <rect x="0" y="360" width="520" height="14" rx="7" fill="#48ffa7"/>
+    <!-- building 1 -->
+    <rect x="40" y="160" width="110" height="200" rx="8" fill="#1e3049" stroke="#45bfff" stroke-width="3"/>
+    <rect x="58" y="185" width="74" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <rect x="58" y="215" width="74" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <rect x="58" y="245" width="74" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <rect x="58" y="275" width="74" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <!-- building 2 -->
+    <rect x="180" y="90" width="130" height="270" rx="8" fill="#1e3049" stroke="#45bfff" stroke-width="3"/>
+    <rect x="202" y="120" width="86" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <rect x="202" y="155" width="86" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <rect x="202" y="190" width="86" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <rect x="202" y="225" width="86" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <rect x="202" y="260" width="86" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <rect x="202" y="295" width="86" height="10" rx="5" fill="#45bfff" opacity="0.35"/>
+    <!-- building 3 -->
+    <rect x="340" y="210" width="100" height="150" rx="8" fill="#1e3049" stroke="#48ffa7" stroke-width="3"/>
+    <rect x="360" y="235" width="60" height="10" rx="5" fill="#48ffa7" opacity="0.35"/>
+    <rect x="360" y="265" width="60" height="10" rx="5" fill="#48ffa7" opacity="0.35"/>
+    <rect x="360" y="295" width="60" height="10" rx="5" fill="#48ffa7" opacity="0.35"/>
+    <!-- small accent blocks -->
+    <rect x="470" y="280" width="70" height="80" rx="6" fill="#45bfff" opacity="0.12"/>
+    <rect x="500" y="250" width="60" height="60" rx="6" fill="#48ffa7" opacity="0.12"/>
   </g>
-  <g transform="translate(160, 700)">
-    <text x="0" y="0" fill="#aab3c1" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="54" font-weight="600">10 Paket Latihan Soal | Pajak Bumi dan Bangunan Perdesaan dan Perkotaan</text>
+
+  <!-- title -->
+  <g transform="translate(150, 360)">
+    <text x="0" y="0" fill="#f4f7fb" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="132" font-weight="700" letter-spacing="-1.5">Latihan Soal</text>
+    <text x="0" y="170" fill="#48ffa7" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="188" font-weight="900" letter-spacing="-2">PBB-P2</text>
   </g>
-  <circle cx="2100" cy="280" r="220" fill="#63e6aa" opacity="0.08"/>
-  <circle cx="2250" cy="650" r="160" fill="#45bfff" opacity="0.08"/>
+
+  <!-- subtitle -->
+  <g transform="translate(150, 690)">
+    <rect x="0" y="-44" width="8" height="56" rx="4" fill="#45bfff"/>
+    <text x="26" y="0" fill="#d3d9e3" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="48" font-weight="600" letter-spacing="0.2">10 Paket Latihan Soal</text>
+    <text x="26" y="62" fill="#7f8999" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="38" font-weight="500">Pajak Bumi dan Bangunan Perdesaan dan Perkotaan</text>
+  </g>
+
+  <!-- decorative soft circles -->
+  <circle cx="2300" cy="180" r="170" fill="#45bfff" opacity="0.06"/>
+  <circle cx="2100" cy="780" r="220" fill="#48ffa7" opacity="0.05"/>
 </svg>
