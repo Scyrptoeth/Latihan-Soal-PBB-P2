@@ -38,10 +38,14 @@ export function ThemeToggle() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const initialTheme = getInitialTheme();
-    setTheme(initialTheme);
-    applyTheme(initialTheme);
-    setIsMounted(true);
+    const frame = window.requestAnimationFrame(() => {
+      const initialTheme = getInitialTheme();
+      setTheme(initialTheme);
+      applyTheme(initialTheme);
+      setIsMounted(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   function toggleTheme() {

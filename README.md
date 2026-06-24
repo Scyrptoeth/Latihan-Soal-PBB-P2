@@ -9,7 +9,7 @@ Aplikasi web latihan soal **Pajak Bumi dan Bangunan Perdesaan dan Perkotaan (PBB
 ## Fitur Utama
 
 - **10 Paket Latihan Soal** (Paket A–J), 10 soal per paket.
-- **Mode Flipcard**: tanya-jawab interaktif dengan pembahasan.
+- **Akses Langsung ke Tes**: klik paket dari beranda atau sidebar untuk langsung mulai mengerjakan.
 - **Mode Tes**: pengerjaan soal berurutan, dashboard nomor soal, submit, skor, dan review pembahasan.
 - **Sistem Skoring**: persentase, riwayat attempt, dan best score per paket.
 - **Tema Terang/Gelap**: deteksi preferensi sistem dan toggle manual.

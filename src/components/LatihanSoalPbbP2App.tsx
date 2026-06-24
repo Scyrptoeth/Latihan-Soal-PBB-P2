@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  ArrowLeft,
   ArrowRight,
   ArrowUp,
   BarChart3,
-  BookOpen,
   ChevronLeft,
   ChevronRight,
   CheckCircle2,
@@ -51,8 +49,7 @@ import { submitAnonymousFeedback } from "@/lib/feedbackSync";
 import type { RatingStore } from "@/lib/ratings";
 import type { LearningQuestion, StoredAnswer, StudyPackage, TestAttempt } from "@/types/learning";
 
-type LearningMode = "flipcard" | "test";
-type Mode = "home" | "choice" | LearningMode;
+type Mode = "home" | "test";
 type ConfirmationDialog = "submit" | "retake" | null;
 type RatingAnalyticsSource = "central" | "local";
 type AnonymousFeedbackStatus = "idle" | "sending" | "sent" | "error";
@@ -60,7 +57,6 @@ type AnonymousFeedbackStatus = "idle" | "sending" | "sent" | "error";
 const optionLabels = ["A", "B", "C", "D"];
 const ratingOptions = [1, 2, 3, 4, 5] as const;
 const SUBJECT_NAME = "PBB-P2";
-const SUBJECT_DESCRIPTION = "Pajak Bumi dan Bangunan Perdesaan dan Perkotaan";
 
 function GitHubMark() {
   return (
@@ -156,8 +152,6 @@ export function LatihanSoalPbbP2App() {
   const [mode, setMode] = useState<Mode>("home");
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(studyPackages[0]?.id ?? null);
-  const [cardIndex, setCardIndex] = useState(0);
-  const [isCardOpen, setIsCardOpen] = useState(false);
   const [answers, setAnswers] = useState<StoredAnswer[]>([]);
   const [submittedAttempt, setSubmittedAttempt] = useState<TestAttempt | null>(null);
   const [confirmationDialog, setConfirmationDialog] = useState<ConfirmationDialog>(null);
@@ -199,12 +193,10 @@ export function LatihanSoalPbbP2App() {
   }, [selectedPackageId]);
 
   const packageAttempts = currentPackage ? attemptStore[currentPackage.id] ?? [] : [];
-  const currentQuestion = currentPackage?.questions[cardIndex] ?? null;
   const answerMap = getAnswerMap(answers);
   const answeredCount = answers.filter((answer) => answer.selectedOptionIndex !== null).length;
   const answeredNumbers = answers.flatMap((answer, index) => (answer.selectedOptionIndex !== null ? [index + 1] : []));
   const unansweredNumbers = answers.flatMap((answer, index) => (answer.selectedOptionIndex === null ? [index + 1] : []));
-  const latestAttempt = packageAttempts.at(-1);
   const isDeveloperDashboardOpen = developerDashboardSnapshot === "open" && !isDeveloperDashboardDismissed;
   const activeRatingStore = centralRatingStore ?? ratingStore;
 
@@ -292,7 +284,7 @@ export function LatihanSoalPbbP2App() {
     }
 
     const nextPackage = currentPackage ?? studyPackages[0] ?? null;
-    setMode(nextMode);
+    setMode("test");
 
     if (!nextPackage) {
       setSelectedPackageId(null);
@@ -301,14 +293,11 @@ export function LatihanSoalPbbP2App() {
       return;
     }
 
-    if (nextPackage.id !== selectedPackageId) {
+    if (nextPackage.id !== selectedPackageId || answers.length !== nextPackage.questions.length) {
       setSelectedPackageId(nextPackage.id);
       setAnswers(createEmptyAnswers(nextPackage.questions));
       setSubmittedAttempt(null);
     }
-
-    setCardIndex(0);
-    setIsCardOpen(false);
   }
 
   function selectPackage(packageId: string) {
@@ -318,10 +307,9 @@ export function LatihanSoalPbbP2App() {
     }
 
     setSelectedPackageId(packageId);
-    setCardIndex(0);
-    setIsCardOpen(false);
     setAnswers(createEmptyAnswers(nextPackage.questions));
     setSubmittedAttempt(null);
+    setMode("test");
   }
 
   function selectAnswer(questionId: string, selectedOptionIndex: number) {
@@ -444,18 +432,6 @@ export function LatihanSoalPbbP2App() {
     setAnonymousFeedbackError(result.error);
   }
 
-  function moveCard(direction: -1 | 1) {
-    if (!currentPackage) {
-      return;
-    }
-
-    setCardIndex((currentIndex) => {
-      const nextIndex = currentIndex + direction;
-      return Math.min(Math.max(nextIndex, 0), currentPackage.questions.length - 1);
-    });
-    setIsCardOpen(false);
-  }
-
   const anonymousFeedbackPanel = (
     <section
       className={`anonymous-feedback-panel ${mode === "home" ? "is-home-grid" : ""}`}
@@ -560,10 +536,7 @@ export function LatihanSoalPbbP2App() {
               <button
                 className={`topic-button ${studyPackage.id === currentPackage?.id && mode !== "home" ? "is-active" : ""}`}
                 key={studyPackage.id}
-                onClick={() => {
-                  selectPackage(studyPackage.id);
-                  setMode("choice");
-                }}
+                onClick={() => selectPackage(studyPackage.id)}
                 type="button"
                 title={studyPackage.name}
               >
@@ -613,15 +586,6 @@ export function LatihanSoalPbbP2App() {
               >
                 <Home aria-hidden="true" size={18} />
                 Beranda
-              </button>
-              <button
-                aria-pressed={mode === "flipcard"}
-                className={mode === "flipcard" ? "is-active" : ""}
-                onClick={() => activateMode("flipcard")}
-                type="button"
-              >
-                <BookOpen aria-hidden="true" size={18} />
-                Flipcard
               </button>
               <button
                 aria-pressed={mode === "test"}
@@ -715,64 +679,6 @@ export function LatihanSoalPbbP2App() {
             </section>
           ) : null}
 
-          {mode !== "home" && currentPackage ? (
-            <section
-              className={`package-mode-panel ${mode === "choice" ? "is-choice" : `is-swap is-${mode}-swap`}`}
-              aria-label={mode === "choice" ? "Pilih cara belajar" : "Pindah mode belajar"}
-            >
-              {mode === "choice" ? (
-                <>
-                  <div className="section-heading">
-                    <div>
-                      <p className="eyebrow">Pilih mode</p>
-                      <h3>Pilih cara belajar</h3>
-                    </div>
-                  </div>
-                  <div className="mode-choice-grid">
-                    <button onClick={() => activateMode("flipcard")} type="button">
-                      <span className="mode-choice-icon">
-                        <BookOpen aria-hidden="true" size={24} />
-                      </span>
-                      <span>
-                        <strong>Flipcard</strong>
-                        <small>Kartu tanya jawab</small>
-                      </span>
-                      <ArrowRight aria-hidden="true" size={20} />
-                    </button>
-                    <button onClick={() => activateMode("test")} type="button">
-                      <span className="mode-choice-icon">
-                        <ClipboardCheck aria-hidden="true" size={24} />
-                      </span>
-                      <span>
-                        <strong>Tes</strong>
-                        <small>Latihan pilihan ganda</small>
-                      </span>
-                      <ArrowRight aria-hidden="true" size={20} />
-                    </button>
-                  </div>
-                </>
-              ) : mode === "flipcard" ? (
-                <button className="mode-swap-button" onClick={() => activateMode("test")} type="button">
-                  <ClipboardCheck aria-hidden="true" size={20} />
-                  <span>
-                    <strong>Lanjut ke Tes</strong>
-                    <small>{currentPackage.name}</small>
-                  </span>
-                  <ArrowRight aria-hidden="true" size={18} />
-                </button>
-              ) : (
-                <button className="mode-swap-button" onClick={() => activateMode("flipcard")} type="button">
-                  <BookOpen aria-hidden="true" size={20} />
-                  <span>
-                    <strong>Buka Flipcard</strong>
-                    <small>{currentPackage.name}</small>
-                  </span>
-                  <ArrowRight aria-hidden="true" size={18} />
-                </button>
-              )}
-            </section>
-          ) : null}
-
           {mode === "home" ? (
             <section className="home-dashboard" aria-label="Beranda progres belajar">
               <div className="home-panel package-grid-panel">
@@ -793,10 +699,7 @@ export function LatihanSoalPbbP2App() {
                         aria-label={`Buka ${studyPackage.name}, ${studyPackage.questions.length} soal${isAttempted ? `, skor terbaik ${bestScore}%` : ""}`}
                         className={`package-grid-card ${isAttempted ? "is-attempted" : ""}`}
                         key={studyPackage.id}
-                        onClick={() => {
-                          selectPackage(studyPackage.id);
-                          setMode("choice");
-                        }}
+                        onClick={() => selectPackage(studyPackage.id)}
                         type="button"
                       >
                         <span className="package-grid-icon">
@@ -818,64 +721,7 @@ export function LatihanSoalPbbP2App() {
                 {anonymousFeedbackPanel}
               </div>
             </section>
-          ) : !currentPackage || !currentQuestion || mode === "choice" ? null : mode === "flipcard" ? (
-            <section className="study-surface" aria-label="Flipcard">
-              <div className="study-header">
-                <div>
-                  <p className="eyebrow">Flipcard {cardIndex + 1} dari {currentPackage.questions.length}</p>
-                  <h3>{currentQuestion.topic}</h3>
-                </div>
-                <div className="progress-track" aria-hidden="true">
-                  <span style={{ width: `${((cardIndex + 1) / currentPackage.questions.length) * 100}%` }} />
-                </div>
-              </div>
-
-              <button
-                aria-label={isCardOpen ? "Tampilkan pertanyaan" : "Tampilkan jawaban"}
-                aria-pressed={isCardOpen}
-                className={`flipcard ${isCardOpen ? "is-open" : ""}`}
-                onClick={() => setIsCardOpen((value) => !value)}
-                type="button"
-              >
-                <span className="flipcard-inner">
-                  <span aria-hidden={isCardOpen} className="flipcard-face flipcard-front">
-                    <span className="card-kicker">Pertanyaan</span>
-                    <span className="card-text">{currentQuestion.question}</span>
-                  </span>
-                  <span aria-hidden={!isCardOpen} className="flipcard-face flipcard-back">
-                    <span className="card-kicker">Jawaban</span>
-                    <span className="card-answer-content">
-                      <span className="card-answer">{currentQuestion.answer}</span>
-                      <span className="card-explanation">
-                        {getExplanationParagraphs(currentQuestion.explanation).map((paragraph) => (
-                          <span key={paragraph}>{paragraph}</span>
-                        ))}
-                      </span>
-                    </span>
-                  </span>
-                </span>
-              </button>
-
-              <div className="action-row">
-                <button disabled={cardIndex === 0} onClick={() => moveCard(-1)} type="button">
-                  <ArrowLeft aria-hidden="true" size={18} />
-                  Sebelumnya
-                </button>
-                <button onClick={() => setIsCardOpen((value) => !value)} type="button">
-                  <RotateCcw aria-hidden="true" size={18} />
-                  Balik kartu
-                </button>
-                <button
-                  disabled={cardIndex === currentPackage.questions.length - 1}
-                  onClick={() => moveCard(1)}
-                  type="button"
-                >
-                  Berikutnya
-                  <ArrowRight aria-hidden="true" size={18} />
-                </button>
-              </div>
-            </section>
-          ) : (
+          ) : !currentPackage ? null : (
             <section className="test-layout" aria-label="Tes">
               <div className="test-main">
                 <div className="test-status">

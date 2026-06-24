@@ -18,7 +18,7 @@ const mono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "Latihan Soal PBB-P2",
-  description: "Website latihan soal Pajak Bumi dan Bangunan Perdesaan dan Perkotaan (PBB-P2) dengan 10 paket latihan, Flipcard, Tes, Pembahasan, dan Sistem Skoring.",
+  description: "Website latihan soal Pajak Bumi dan Bangunan Perdesaan dan Perkotaan (PBB-P2) dengan 10 paket tes, pembahasan, dan sistem skoring.",
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }]
   }
