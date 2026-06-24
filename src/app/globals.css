@@ -401,6 +401,7 @@ button:disabled {
 }
 
 .mode-switch button,
+.mode-switch a,
 .package-strip button,
 .sticky-actions button {
   align-items: center;
@@ -410,7 +411,8 @@ button:disabled {
   min-height: 40px;
 }
 
-.mode-switch button {
+.mode-switch button,
+.mode-switch a {
   background: transparent;
   border: 0;
   border-radius: 999px;
@@ -424,17 +426,20 @@ button:disabled {
   transition: background-color 220ms, color 220ms, transform 220ms;
 }
 
-.mode-switch button:hover {
+.mode-switch button:hover,
+.mode-switch a:hover {
   background: var(--paper-soft);
   color: var(--ink);
 }
 
-.mode-switch button:not(:first-child) {
+.mode-switch button:not(:first-child),
+.mode-switch a:not(:first-child) {
   border: 1px solid var(--line);
   color: var(--ink);
 }
 
-.mode-switch button:not(:first-child):hover {
+.mode-switch button:not(:first-child):hover,
+.mode-switch a:not(:first-child):hover {
   border-color: var(--ink);
 }
 
@@ -1487,7 +1492,8 @@ button:disabled {
     width: 100%;
   }
 
-  .mode-switch button {
+  .mode-switch button,
+  .mode-switch a {
     flex: 1 1 auto;
     font-size: 13px;
     padding: 8px 10px;

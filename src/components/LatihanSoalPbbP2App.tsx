@@ -4,6 +4,7 @@ import {
   ArrowRight,
   ArrowUp,
   BarChart3,
+  BookOpen,
   ChevronLeft,
   ChevronRight,
   CheckCircle2,
@@ -563,6 +564,15 @@ export function LatihanSoalPbbP2App() {
                 <Home aria-hidden="true" size={18} />
                 Beranda
               </button>
+              <a
+                aria-label="Buka Buku Panduan Latihan Soal PBB-P2 dalam format PDF"
+                href="/buku-panduan-latihan-soal-pbb-p2.pdf"
+                rel="noreferrer"
+                target="_blank"
+              >
+                <BookOpen aria-hidden="true" size={18} />
+                Buku Panduan
+              </a>
               <ThemeToggle />
             </div>
           </header>

@@ -1,5 +1,23 @@
 import { test, expect } from "@playwright/test";
 
+test.describe("Buku Panduan", () => {
+  test("exposes the PDF guide from the primary navigation", async ({ page }) => {
+    await page.goto("/");
+
+    const guideLink = page.getByRole("link", {
+      name: "Buka Buku Panduan Latihan Soal PBB-P2 dalam format PDF"
+    });
+
+    await expect(guideLink).toBeVisible();
+    await expect(guideLink).toHaveAttribute("href", "/buku-panduan-latihan-soal-pbb-p2.pdf");
+    await expect(guideLink).toHaveAttribute("target", "_blank");
+
+    const guideResponse = await page.request.get("/buku-panduan-latihan-soal-pbb-p2.pdf");
+    expect(guideResponse.ok()).toBeTruthy();
+    expect(guideResponse.headers()["content-type"]).toContain("application/pdf");
+  });
+});
+
 test.describe("Direct package navigation", () => {
   test("opens a package from the sidebar directly in test mode", async ({ page }) => {
     await page.goto("/");
