@@ -1049,9 +1049,9 @@ export function LatihanSoalPbbP2App() {
           )}
 
           <footer className="site-footer" aria-label="Informasi situs">
-            <p>Latihan Soal PBB-P2: Persiapkan diri untuk ujian dan asesmen Pajak Bumi dan Bangunan Perdesaan dan Perkotaan.</p>
+            <p>Kisi-Kisi Ujian Diklat PBB-P2: Selamat Mempersiapkan Diri, Bapak/Ibu. Yakin Lulus 100%. Amin.</p>
             <div className="site-footer-links">
-              <a href="https://github.com/Scyrptoeth/Latihan-Soal-PBB-P2" rel="noreferrer" target="_blank">
+              <a href="https://persiapantubel.com/" rel="noreferrer" target="_blank">
                 <GitHubMark />
                 GitHub
               </a>
