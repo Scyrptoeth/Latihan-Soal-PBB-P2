@@ -872,6 +872,96 @@ button:disabled {
   transition: width 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.package-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  margin-top: 16px;
+}
+
+.package-grid-card {
+  align-items: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: auto 1fr auto;
+  min-height: 64px;
+  padding: 13px 15px;
+  text-align: left;
+  transition: background-color 220ms, border-color 220ms, box-shadow 220ms, transform 220ms;
+}
+
+.package-grid-card:hover {
+  border-color: var(--ink);
+  box-shadow: 0 10px 26px rgba(21, 22, 25, 0.08);
+  transform: translateY(-2px);
+}
+
+.package-grid-card:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.package-grid-card.is-attempted {
+  border-color: var(--success);
+}
+
+.package-grid-card.is-attempted:hover {
+  border-color: color-mix(in srgb, var(--success) 70%, var(--ink));
+}
+
+.package-grid-icon {
+  align-items: center;
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  color: var(--ink);
+  display: inline-flex;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.package-grid-info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.package-grid-info strong {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.package-grid-info small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.package-grid-score {
+  background: var(--success-soft);
+  border: 1px solid rgba(17, 132, 91, 0.24);
+  border-radius: var(--radius-control);
+  color: var(--success);
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 5px 10px;
+}
+
+:root[data-theme="dark"] .package-grid-score {
+  background: rgba(104, 217, 170, 0.12);
+  border-color: rgba(104, 217, 170, 0.3);
+}
+
+.package-grid-panel .anonymous-feedback-panel {
+  margin-top: 18px;
+}
+
 .study-surface {
   display: grid;
   gap: 18px;
@@ -1658,6 +1748,10 @@ button:disabled {
 
   .package-strip {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .package-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .answer-map-columns {

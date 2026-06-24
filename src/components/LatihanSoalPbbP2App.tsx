@@ -218,24 +218,6 @@ export function LatihanSoalPbbP2App() {
     });
   }, [activeRatingStore]);
 
-  const progressData = useMemo(() => {
-    const attemptedPackages = studyPackages.filter((studyPackage) => (attemptStore[studyPackage.id] ?? []).length > 0);
-    const bestScore = studyPackages.reduce((best, studyPackage) => {
-      const attempts = attemptStore[studyPackage.id] ?? [];
-      const packageBest = attempts.reduce((currentBest, attempt) => Math.max(currentBest, attempt.percentage), 0);
-
-      return Math.max(best, packageBest);
-    }, 0);
-    const completion = Math.round((attemptedPackages.length / studyPackages.length) * 100);
-
-    return {
-      totalPackages: studyPackages.length,
-      attemptedCount: attemptedPackages.length,
-      bestScore,
-      completion
-    };
-  }, [attemptStore]);
-
   useEffect(() => {
     let isCancelled = false;
 
@@ -793,31 +775,47 @@ export function LatihanSoalPbbP2App() {
 
           {mode === "home" ? (
             <section className="home-dashboard" aria-label="Beranda progres belajar">
-              <div className="home-panel category-progress">
+              <div className="home-panel package-grid-panel">
                 <div className="section-heading">
                   <div>
                     <p className="eyebrow">PBB-P2</p>
-                    <h3>Detail progress</h3>
+                    <h3>Pilih Paket Soal</h3>
                   </div>
                 </div>
-                <div className="category-progress-list">
-                  <button
-                    className="is-active"
-                    type="button"
-                  >
-                    <span>
-                      <strong>{SUBJECT_NAME}</strong>
-                      <small>
-                        {progressData.attemptedCount}/{progressData.totalPackages} paket dikerjakan
-                      </small>
-                    </span>
-                    <b>{progressData.bestScore}%</b>
-                    <span className="category-progress-meter" aria-hidden="true">
-                      <span style={{ width: `${progressData.completion}%` }} />
-                    </span>
-                  </button>
-                  {anonymousFeedbackPanel}
+                <div className="package-grid">
+                  {studyPackages.map((studyPackage) => {
+                    const attempts = attemptStore[studyPackage.id] ?? [];
+                    const bestScore = attempts.reduce((best, attempt) => Math.max(best, attempt.percentage), 0);
+                    const isAttempted = attempts.length > 0;
+
+                    return (
+                      <button
+                        aria-label={`Buka ${studyPackage.name}, ${studyPackage.questions.length} soal${isAttempted ? `, skor terbaik ${bestScore}%` : ""}`}
+                        className={`package-grid-card ${isAttempted ? "is-attempted" : ""}`}
+                        key={studyPackage.id}
+                        onClick={() => {
+                          selectPackage(studyPackage.id);
+                          setMode("choice");
+                        }}
+                        type="button"
+                      >
+                        <span className="package-grid-icon">
+                          <Layers3 aria-hidden="true" size={20} />
+                        </span>
+                        <span className="package-grid-info">
+                          <strong>{studyPackage.name}</strong>
+                          <small>{studyPackage.questions.length} soal</small>
+                        </span>
+                        {isAttempted ? (
+                          <span className="package-grid-score">{bestScore}%</span>
+                        ) : (
+                          <ArrowRight aria-hidden="true" size={18} />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
+                {anonymousFeedbackPanel}
               </div>
             </section>
           ) : !currentPackage || !currentQuestion || mode === "choice" ? null : mode === "flipcard" ? (
