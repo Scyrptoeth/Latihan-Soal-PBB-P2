@@ -1402,8 +1402,14 @@ button:disabled {
 }
 
 .sticky-actions {
+  background: var(--paper-glass);
+  border-top: 1px solid var(--line);
+  bottom: 0;
   display: flex;
   justify-content: flex-end;
+  padding: 13px 18px;
+  position: sticky;
+  z-index: 5;
 }
 
 .sticky-actions button {
@@ -1510,51 +1516,69 @@ button:disabled {
   border-top: 1px solid var(--line);
   color: var(--muted);
   display: grid;
-  gap: 14px;
+  font-size: 13px;
+  gap: 10px;
+  justify-items: center;
   margin-top: auto;
   padding: 28px 29px;
   position: relative;
+  text-align: center;
 }
 
 .site-footer > p {
   margin: 0;
+  max-width: 760px;
 }
 
 .site-footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 22px;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  max-width: 760px;
 }
 
 .site-footer-links a {
   align-items: center;
-  color: var(--ink);
+  color: var(--muted);
   display: inline-flex;
+  flex-wrap: nowrap;
   gap: 7px;
-  font-weight: 600;
+  min-height: 36px;
   text-decoration: none;
+  transition: color 220ms, transform 220ms;
 }
 
 .site-footer-links a:hover {
-  text-decoration: underline;
+  color: var(--ink);
+  transform: translateY(-1px);
 }
 
 .site-footer-copy {
-  font-size: 13px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
 }
 
 .back-to-top {
   align-items: center;
-  background: var(--ink);
+  background: var(--paper);
+  border: 3px solid var(--line);
   border-radius: 999px;
   bottom: 20px;
-  color: var(--ink-inverse);
+  color: var(--ink-soft);
   display: inline-flex;
-  height: 44px;
+  height: 43px;
   justify-content: center;
   position: absolute;
   right: 29px;
-  width: 44px;
+  text-decoration: none;
+  transition: border-color 220ms, color 220ms, transform 220ms;
+  width: 43px;
+}
+
+.back-to-top:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+  transform: translateY(-2px);
 }
 
 .dialog-backdrop {
@@ -1752,6 +1776,16 @@ button:disabled {
 
   .package-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sticky-actions {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .sticky-actions button {
+    justify-content: center;
+    width: 100%;
   }
 
   .answer-map-columns {
