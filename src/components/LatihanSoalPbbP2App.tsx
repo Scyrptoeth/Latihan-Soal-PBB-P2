@@ -45,7 +45,8 @@ import {
 } from "@/lib/ratings";
 import { fetchCentralRatingStore, syncPackageRating, syncPackageSubmit } from "@/lib/ratingSync";
 import { FEEDBACK_MAX_LENGTH } from "@/lib/feedback";
-import { submitAnonymousFeedback } from "@/lib/feedbackSync";
+import { submitAnonymousFeedback, fetchCentralFeedback } from "@/lib/feedbackSync";
+import type { FeedbackList } from "@/lib/feedback";
 import type { RatingStore } from "@/lib/ratings";
 import type { LearningQuestion, StoredAnswer, StudyPackage, TestAttempt } from "@/types/learning";
 
@@ -53,6 +54,7 @@ type Mode = "home" | "test";
 type ConfirmationDialog = "submit" | "retake" | null;
 type RatingAnalyticsSource = "central" | "local";
 type AnonymousFeedbackStatus = "idle" | "sending" | "sent" | "error";
+type DeveloperTab = "ratings" | "feedback";
 
 const optionLabels = ["A", "B", "C", "D"];
 const ratingOptions = [1, 2, 3, 4, 5] as const;
@@ -148,6 +150,17 @@ function getAnonymousFeedbackErrorMessage(error: string | null) {
   return "Feedback belum berhasil dikirim. Silakan coba lagi.";
 }
 
+function formatFeedbackDate(isoString: string) {
+  try {
+    return new Date(isoString).toLocaleString("id-ID", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    });
+  } catch {
+    return isoString;
+  }
+}
+
 export function LatihanSoalPbbP2App() {
   const [mode, setMode] = useState<Mode>("home");
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -161,6 +174,10 @@ export function LatihanSoalPbbP2App() {
   const [centralRatingStore, setCentralRatingStore] = useState<RatingStore | null>(null);
   const [ratingAnalyticsSource, setRatingAnalyticsSource] = useState<RatingAnalyticsSource>("local");
   const [ratingAnalyticsError, setRatingAnalyticsError] = useState<string | null>(null);
+  const [developerTab, setDeveloperTab] = useState<DeveloperTab>("ratings");
+  const [centralFeedback, setCentralFeedback] = useState<FeedbackList | null>(null);
+  const [feedbackAnalyticsSource, setFeedbackAnalyticsSource] = useState<RatingAnalyticsSource>("local");
+  const [feedbackAnalyticsError, setFeedbackAnalyticsError] = useState<string | null>(null);
   const [anonymousFeedback, setAnonymousFeedback] = useState("");
   const [anonymousFeedbackStatus, setAnonymousFeedbackStatus] = useState<AnonymousFeedbackStatus>("idle");
   const [anonymousFeedbackError, setAnonymousFeedbackError] = useState<string | null>(null);
@@ -239,6 +256,36 @@ export function LatihanSoalPbbP2App() {
       isCancelled = true;
     };
   }, [isDeveloperDashboardOpen, ratingStoreSnapshot]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function loadCentralFeedback() {
+      const result = await fetchCentralFeedback();
+      if (isCancelled) {
+        return;
+      }
+
+      if (result.ok) {
+        setCentralFeedback(result.feedback);
+        setFeedbackAnalyticsSource("central");
+        setFeedbackAnalyticsError(null);
+        return;
+      }
+
+      setCentralFeedback(null);
+      setFeedbackAnalyticsSource("local");
+      setFeedbackAnalyticsError(result.error);
+    }
+
+    if (isDeveloperDashboardOpen && developerTab === "feedback") {
+      void loadCentralFeedback();
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isDeveloperDashboardOpen, developerTab]);
 
   useEffect(() => {
     function preventCopy(event: Event) {
@@ -599,59 +646,113 @@ export function LatihanSoalPbbP2App() {
           )}
 
           {isDeveloperDashboardOpen ? (
-            <section className="developer-analytics" aria-label="Dashboard penilaian developer">
+            <section className="developer-analytics" aria-label="Dashboard developer">
               <div className="section-heading">
                 <div>
                   <p className="eyebrow">Developer</p>
-                  <h3>Penilaian paket</h3>
+                  <h3>Dashboard developer</h3>
                 </div>
                 <button className="developer-panel-close" onClick={() => setIsDeveloperDashboardDismissed(true)} type="button">
                   <X aria-hidden="true" size={18} />
                   Tutup
                 </button>
               </div>
-              <p className="developer-note">
-                {ratingAnalyticsSource === "central"
-                  ? "Data ini dibaca dari storage terpusat. Panel tidak muncul di navigasi publik."
-                  : "Storage terpusat belum aktif atau tidak dapat diakses, jadi panel menampilkan data lokal di browser ini."}
-              </p>
-              {ratingAnalyticsError ? <p className="developer-warning">Status storage pusat: {ratingAnalyticsError}</p> : null}
-              {ratingStats.length > 0 ? (
-                <div className="developer-table-wrap">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th scope="col">Paket</th>
-                        <th scope="col">Submit</th>
-                        <th scope="col">Skor rata-rata</th>
-                        <th scope="col">Rating</th>
-                        <th scope="col">Rata-rata</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ratingStats.map((stats) => {
-                        const averageRating = getAverageRating(stats);
-                        const averageScore = getAverageScore(stats);
-
-                        return (
-                          <tr key={stats.packageId}>
-                            <td>{stats.packageName}</td>
-                            <td>{stats.submitCount}</td>
-                            <td>{averageScore === null ? "-" : averageScore.toFixed(1)}</td>
-                            <td>{stats.ratingCount}</td>
-                            <td>{averageRating === null ? "-" : averageRating.toFixed(1)}</td>
+              <div className="developer-tabs" role="tablist" aria-label="Pilih tampilan dashboard">
+                <button
+                  aria-selected={developerTab === "ratings"}
+                  className={developerTab === "ratings" ? "is-active" : ""}
+                  onClick={() => setDeveloperTab("ratings")}
+                  role="tab"
+                  type="button"
+                >
+                  Penilaian paket
+                </button>
+                <button
+                  aria-selected={developerTab === "feedback"}
+                  className={developerTab === "feedback" ? "is-active" : ""}
+                  onClick={() => setDeveloperTab("feedback")}
+                  role="tab"
+                  type="button"
+                >
+                  Feedback pengguna
+                </button>
+              </div>
+              {developerTab === "ratings" ? (
+                <>
+                  <p className="developer-note">
+                    {ratingAnalyticsSource === "central"
+                      ? "Data ini dibaca dari storage terpusat. Panel tidak muncul di navigasi publik."
+                      : "Storage terpusat belum aktif atau tidak dapat diakses, jadi panel menampilkan data lokal di browser ini."}
+                  </p>
+                  {ratingAnalyticsError ? <p className="developer-warning">Status storage pusat: {ratingAnalyticsError}</p> : null}
+                  {ratingStats.length > 0 ? (
+                    <div className="developer-table-wrap">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th scope="col">Paket</th>
+                            <th scope="col">Submit</th>
+                            <th scope="col">Skor rata-rata</th>
+                            <th scope="col">Rating</th>
+                            <th scope="col">Rata-rata</th>
                           </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                        </thead>
+                        <tbody>
+                          {ratingStats.map((stats) => {
+                            const averageRating = getAverageRating(stats);
+                            const averageScore = getAverageScore(stats);
+
+                            return (
+                              <tr key={stats.packageId}>
+                                <td>{stats.packageName}</td>
+                                <td>{stats.submitCount}</td>
+                                <td>{averageScore === null ? "-" : averageScore.toFixed(1)}</td>
+                                <td>{stats.ratingCount}</td>
+                                <td>{averageRating === null ? "-" : averageRating.toFixed(1)}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="empty-state">
+                      {ratingAnalyticsSource === "central"
+                        ? "Belum ada data submit atau penilaian di storage terpusat."
+                        : "Belum ada data submit atau penilaian lokal di browser ini."}
+                    </p>
+                  )}
+                </>
               ) : (
-                <p className="empty-state">
-                  {ratingAnalyticsSource === "central"
-                    ? "Belum ada data submit atau penilaian di storage terpusat."
-                    : "Belum ada data submit atau penilaian lokal di browser ini."}
-                </p>
+                <>
+                  <p className="developer-note">
+                    {feedbackAnalyticsSource === "central"
+                      ? "Feedback anonim ini dibaca dari storage terpusat. Panel tidak muncul di navigasi publik."
+                      : "Storage terpusat belum aktif atau tidak dapat diakses, jadi panel tidak dapat menampilkan feedback."}
+                  </p>
+                  {feedbackAnalyticsError ? <p className="developer-warning">Status storage pusat: {feedbackAnalyticsError}</p> : null}
+                  {centralFeedback && centralFeedback.items.length > 0 ? (
+                    <div className="developer-feedback-wrap">
+                      <p className="developer-feedback-count">
+                        Menampilkan {centralFeedback.items.length} dari {centralFeedback.totalCount} feedback
+                      </p>
+                      <ol className="developer-feedback-list">
+                        {centralFeedback.items.map((feedback) => (
+                          <li key={feedback.id}>
+                            <time dateTime={feedback.createdAt}>{formatFeedbackDate(feedback.createdAt)}</time>
+                            <p>{feedback.message}</p>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  ) : (
+                    <p className="empty-state">
+                      {feedbackAnalyticsSource === "central"
+                        ? "Belum ada feedback anonim di storage terpusat."
+                        : "Storage terpusat belum aktif, jadi feedback tidak dapat ditampilkan."}
+                    </p>
+                  )}
+                </>
               )}
             </section>
           ) : null}

@@ -1,3 +1,4 @@
+import { DEVELOPER_RATING_ACCESS_STORAGE_KEY } from "@/lib/ratings";
 import { type FeedbackList } from "@/lib/feedback";
 
 type FeedbackSyncResult =
@@ -59,4 +60,17 @@ export async function fetchCentralFeedbackWithToken(token: string): Promise<
   } catch (error) {
     return { ok: false, source: "local", error: error instanceof Error ? error.message : "network_error" };
   }
+}
+
+export async function fetchCentralFeedback(): Promise<
+  | { ok: true; source: "central"; feedback: FeedbackList }
+  | { ok: false; source: "local"; error: string }
+> {
+  const token = window.localStorage.getItem(DEVELOPER_RATING_ACCESS_STORAGE_KEY);
+
+  if (!token) {
+    return { ok: false, source: "local", error: "missing_developer_token" };
+  }
+
+  return fetchCentralFeedbackWithToken(token);
 }
