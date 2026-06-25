@@ -106,10 +106,14 @@ function getDeveloperDashboardSnapshot() {
     return "closed";
   }
 
-  const configuredKey = window.localStorage.getItem(DEVELOPER_RATING_ACCESS_STORAGE_KEY);
   const requestedKey = params.get("key");
+  if (!requestedKey) {
+    return "closed";
+  }
 
-  return process.env.NODE_ENV === "development" || (configuredKey && requestedKey === configuredKey) ? "open" : "closed";
+  window.localStorage.setItem(DEVELOPER_RATING_ACCESS_STORAGE_KEY, requestedKey);
+
+  return "open";
 }
 
 function getServerDeveloperDashboardSnapshot() {
